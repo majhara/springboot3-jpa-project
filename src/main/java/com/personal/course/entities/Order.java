@@ -2,7 +2,9 @@ package com.personal.course.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.personal.course.entities.enums.OrderStatus;
@@ -13,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,16 +30,14 @@ public class Order implements Serializable {
 	private Instant moment;
 
 	private Integer orderStatus;
-	/*
-	 * anotation pra transformar numa chave estrangeira e indicar relacionamento
-	 * muitos pra 1
-	 */
+	/* anotation pra transformar numa chave estrangeira e indicar relacionamento muitos pra 1 */
 	@ManyToOne
-	/*
-	 * anotation indica qual a coluna onde está localizada a chave estrangeira
-	 */
+	//anotation indica qual a coluna onde está localizada a chave estrangeira
 	@JoinColumn(name = "client_id")
 	private User client;
+	
+	@OneToMany(mappedBy = "id.order")
+	private Set<OrderItem> items = new HashSet<>();
 
 	public Order() {
 
@@ -72,7 +73,11 @@ public class Order implements Serializable {
 	public void setClient(User client) {
 		this.client = client;
 	}
-
+	
+	public Set<OrderItem> getOrderItems(){
+		return items;
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
